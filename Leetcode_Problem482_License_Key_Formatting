@@ -1,0 +1,94 @@
+char * licenseKeyFormatting(char * s, int k){
+    int len = strlen(s), size = len + (len / k) + 1, counter = 0;
+    char* ans = calloc(size, sizeof(char));
+    ans[--size] = '\0';
+    for(int i = len - 1; i > -1; i--)
+    {
+        if(s[i] != '-')
+        {
+            ans[--size] = (s[i] >= 97 && s[i] <= 122) ? s[i] - 32 : s[i];
+            counter++;
+            if(counter == k && i != 0)
+            {
+                ans[--size] = '-';
+                counter = 0;
+            }
+        }    
+    }
+    if(ans[size] == '-')
+        size++;
+    return ans + size;
+}
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+static char buf[100001];
+char * licenseKeyFormatting(char * s, int k){
+    int len = strlen(s) , j = 100000;
+    buf[100000] = 0;
+    for (int i = len - 1, cnt = 0 ; i >= 0 ; i--) 
+    {
+        if (s[i] != '-') 
+        {
+            j--;
+            if (cnt == k) 
+            {
+                buf[j--] = '-';
+                cnt = 0;
+            }
+            buf[j] = (s[i] >= 'a' && s[i] <= 'z') ? toupper(s[i]) : s[i]; 
+            cnt++;
+        }
+    }
+    return &buf[j];
+}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+char * licenseKeyFormatting(char * s, int k){
+    int i, j, part_len, len, dash_num , resultSize;
+    char c , *result;
+    // generate new string without any char '-'.
+    len = strlen(s);
+    for ( i = 0, j = 0 ; j < len ; ++j )
+        if ( s[j] != '-' )
+            s[i++] = s[j];
+    len = i;
+    // calculate the lenght of final string and allocate it.
+    // fill the result string in reverse way (right to left)
+    dash_num = (len - 1) / k;
+    result = malloc( (len + dash_num + 1) * sizeof (char) );
+    result[len + dash_num] = '\0';
+    resultSize = len + dash_num;
+    if ( len > 0 ) // put the first char. to the final string to prevent tailed '-' problem.
+    {
+        c = s[len-1];
+        if ( c >= 'a' && c <= 'z' )
+            c &= ~32;
+        result[--resultSize] = c;
+        part_len = 1;
+    }
+    for ( i = len-2 ; i >= 0 ; i-- ) // iteration of each input char.
+    {
+        if ( part_len < k ) 
+        {
+            if ( part_len == 0 )
+                result[--resultSize] = '-';
+            c = s[i];
+            part_len++;
+            if ( c >= 'a' && c <= 'z' )
+                c &= ~32;
+            result[--resultSize] = c;
+        }
+        else 
+        {
+            part_len = 0;
+            i++;
+        }
+    }
+    return result;
+}
